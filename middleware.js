@@ -28,9 +28,15 @@ export function middleware(request) {
 
   // Redirect unauthenticated users to login
   if (isProtectedRoute && !token) {
+    // CRITICAL FIX: Check if we're already being redirected to login
+    // to prevent infinite loop
     const loginUrl = new URL('/login', request.url)
-    loginUrl.searchParams.set('callbackUrl', pathname)
-    return NextResponse.redirect(loginUrl)
+    
+    // Only redirect if we're not already going to login
+    if (pathname !== '/login') {
+      loginUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(loginUrl)
+    }
   }
 
   return NextResponse.next()
