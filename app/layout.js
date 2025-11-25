@@ -16,17 +16,17 @@ const orbitron = Orbitron({
 })
 
 export const metadata = {
-  title: 'BrainSeek — Intelligent Knowledge Search',
+  title: 'BrainSeek-Ai',
   description: 'BrainSeek — fast, intelligent knowledge search powered by AI. Discover information quickly with semantic search and real-time insights.',
   keywords: 'BrainSeek, AI search, semantic search, knowledge engine, research tools, intelligent discovery',
   openGraph: {
     title: 'BrainSeek',
     description: 'BrainSeek — fast, intelligent knowledge search powered by AI. Discover information quickly with semantic search and real-time insights.',
-    url: 'https://brainseek.vercel.app/',
+    url: 'https://brainseekai.onrender.com/',
     siteName: 'BrainSeek',
     images: [
       {
-        url: 'https://brainseek.vercel.app/brainseek.jpg',
+        url: 'https://brainseekai.onrender.com/brainseek.jpg',
         width: 1200,
         height: 630,
         alt: 'BrainSeek logo',
@@ -38,7 +38,7 @@ export const metadata = {
     card: 'summary_large_image',
     title: 'BrainSeek — Intelligent Knowledge Search',
     description: 'Discover information instantly with BrainSeek\'s AI-enhanced semantic search.',
-    images: ['https://brainseek.vercel.app/brainseek.jpg'],
+    images: ['https://brainseekai.onrender.com/brainseek.jpg'],
   },
   icons: {
     icon: '/brainseek.jpg',
