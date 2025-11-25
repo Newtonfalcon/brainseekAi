@@ -1,7 +1,7 @@
 'use client'
 
 import { createContext, useContext, useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
+import { useRouter, usePathname } from 'next/navigation'
 import api from '../lib/api'
 
 const AuthContext = createContext()
@@ -11,11 +11,18 @@ export const AuthProvider = ({ children }) => {
   const [status, setStatus] = useState('pending')
   const [error, setError] = useState('')
   const router = useRouter()
+  const pathname = usePathname()
 
   useEffect(() => {
     let ignore = false
 
     const getUser = async () => {
+      // Don't check auth on login/register pages
+      if (pathname === '/login' || pathname === '/register' || pathname === '/') {
+        setStatus('not authenticated')
+        return
+      }
+
       try {
         const res = await api.get('/auth/user')
         if (!ignore) {
@@ -26,6 +33,11 @@ export const AuthProvider = ({ children }) => {
         if (!ignore) {
           setUser(null)
           setStatus('not authenticated')
+          
+          // Only redirect if not already on auth pages
+          if (pathname !== '/login' && pathname !== '/register' && pathname !== '/') {
+            router.push('/login')
+          }
         }
       }
     }
@@ -35,7 +47,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       ignore = true
     }
-  }, [])
+  }, [pathname, router])
 
   const register = async (name, email, password) => {
     setStatus('pending')

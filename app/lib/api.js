@@ -7,14 +7,12 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json'
   },
-  // Add timeout to prevent hanging requests
-  timeout: 30000 // 30 seconds
+  timeout: 30000
 })
 
 // Request interceptor
 api.interceptors.request.use(
   (config) => {
-    // Debug log in development
     if (process.env.NODE_ENV === 'development') {
       console.log('API Request:', {
         method: config.method,
@@ -34,7 +32,6 @@ api.interceptors.request.use(
 // Response interceptor
 api.interceptors.response.use(
   (response) => {
-    // Debug log in development
     if (process.env.NODE_ENV === 'development') {
       console.log('API Response:', {
         status: response.status,
@@ -46,23 +43,25 @@ api.interceptors.response.use(
   (error) => {
     // Enhanced error logging
     if (error.response) {
-      // Server responded with error status
       console.error('API Error Response:', {
         status: error.response.status,
         data: error.response.data,
         url: error.config?.url
       })
       
-      // Handle 401 Unauthorized
+      // Handle 401 Unauthorized - but ONLY redirect if not already on auth pages
       if (error.response.status === 401) {
         if (typeof window !== 'undefined') {
-          // Clear any stale state
-          localStorage.removeItem('user')
-          window.location.href = '/login'
+          const currentPath = window.location.pathname
+          
+          // Only redirect to login if we're NOT already on an auth page
+          if (!currentPath.includes('/login') && !currentPath.includes('/register')) {
+            localStorage.removeItem('user')
+            window.location.href = '/login'
+          }
         }
       }
     } else if (error.request) {
-      // Request was made but no response received (CORS/Network error)
       console.error('API Network Error:', {
         message: error.message,
         code: error.code,
@@ -70,7 +69,6 @@ api.interceptors.response.use(
         baseURL: error.config?.baseURL
       })
       
-      // This is likely your CORS error
       if (error.message === 'Network Error') {
         console.error('🔴 CORS or Network issue detected!')
         console.error('Check:')
@@ -79,7 +77,6 @@ api.interceptors.response.use(
         console.error('3. Backend is running and accessible')
       }
     } else {
-      // Something else happened
       console.error('API Setup Error:', error.message)
     }
     
