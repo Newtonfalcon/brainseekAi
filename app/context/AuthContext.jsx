@@ -17,8 +17,9 @@ export const AuthProvider = ({ children }) => {
     let ignore = false
 
     const getUser = async () => {
-      // Don't check auth on login/register pages
-      if (pathname === '/login' || pathname === '/register' || pathname === '/') {
+      // Don't check auth on public pages
+      const publicPages = ['/', '/login', '/register']
+      if (publicPages.includes(pathname)) {
         setStatus('not authenticated')
         return
       }
@@ -33,11 +34,7 @@ export const AuthProvider = ({ children }) => {
         if (!ignore) {
           setUser(null)
           setStatus('not authenticated')
-          
-          // Only redirect if not already on auth pages
-          if (pathname !== '/login' && pathname !== '/register' && pathname !== '/') {
-            router.push('/login')
-          }
+          // Middleware will handle the redirect, no need to do it here
         }
       }
     }
@@ -47,7 +44,7 @@ export const AuthProvider = ({ children }) => {
     return () => {
       ignore = true
     }
-  }, [pathname, router])
+  }, [pathname])
 
   const register = async (name, email, password) => {
     setStatus('pending')

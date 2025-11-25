@@ -1,18 +1,26 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { useAuth } from '../../context/AuthContext'
 
 export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const { login, status, error } = useAuth()
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  
+  // Get the redirect URL from query params
+  const redirectTo = searchParams.get('redirect') || '/message'
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     try {
       await login(email, password)
+      // Redirect to the intended page or default to /message
+      router.push(redirectTo)
     } catch (error) {
       console.error('Login error:', error)
     }
@@ -30,6 +38,12 @@ export default function LoginPage() {
         <h1 className="text-3xl font-semibold text-center mb-6">
           Login your BrainSeek Account
         </h1>
+
+        {redirectTo !== '/message' && (
+          <div className="mb-4 p-3 bg-blue-50 border border-blue-200 rounded-lg text-sm text-blue-800">
+            Please log in to continue
+          </div>
+        )}
 
         <form className="space-y-5" onSubmit={handleSubmit}>
           <div>
